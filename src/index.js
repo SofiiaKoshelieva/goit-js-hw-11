@@ -5,7 +5,6 @@ import { appendPicturesMarkup, clearPage } from './markup.js';
 const newsApiServise = new NewsApiServise();
 const formEl = document.querySelector('.search-form');
 const inputEl = document.querySelector('input');
-const buttonSubmitEl = document.querySelector('button[type="submit"]');
 const buttonLoadEl = document.querySelector('.load-more');
 export const galleryEl = document.querySelector('.gallery');
 let counter = 1;
@@ -32,6 +31,7 @@ async function onFormSubmit(e) {
     } else {
       if (dataResponse.data.totalHits > 40) {
         buttonLoadEl.hidden = false;
+        buttonLoadEl.classList.add('more');
       }
       counter = 1;
       clearPage();
@@ -39,6 +39,7 @@ async function onFormSubmit(e) {
       Notiflix.Notify.info(`Hooray! We found ${dataResponse.data.totalHits} images.`);
       if (counter * 40 >= dataResponse.data.totalHits) {
         buttonLoadEl.hidden = true;
+        buttonLoadEl.classList.remove('more');
       }
     }
   } catch (error) {
@@ -47,17 +48,26 @@ async function onFormSubmit(e) {
 }
 
 async function onBtnClick() {
-  counter++;
+
   try {
     const dataResponse = await newsApiServise.fetchPhotos();
     const info = dataResponse.data.hits;
     if (counter * 40 >= dataResponse.data.totalHits) {
       Notiflix.Notify.warning("We're sorry, but you've reached the end of search results.");
       buttonLoadEl.hidden = true;
-    } else {
+      buttonLoadEl.classList.remove('more');
+    } else if (info.length < 40) {
+       appendPicturesMarkup(info);
+      counter++;
+      buttonLoadEl.hidden = true;
+      buttonLoadEl.classList.remove('more');
+    }
+    else {
       appendPicturesMarkup(info);
+        counter++;
     }
   } catch (error) {
     console.log(error);
   }
 }
+
