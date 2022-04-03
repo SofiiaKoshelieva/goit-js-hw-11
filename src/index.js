@@ -11,15 +11,21 @@ export const galleryEl = document.querySelector('.gallery');
 let counter = 1;
 buttonLoadEl.hidden = true;
 
+
 formEl.addEventListener('submit', onFormSubmit);
 buttonLoadEl.addEventListener('click', onBtnClick);
 async function onFormSubmit(e) {
   e.preventDefault();
   newsApiServise.query = e.currentTarget.elements.query.value;
   newsApiServise.resetPage();
+  const inputValue = inputEl.value
+  if (inputValue === '') {
+  return Notiflix.Notify.warning('Please enter request');
+}
   try {
     const dataResponse = await newsApiServise.fetchPhotos();
     const info = dataResponse.data.hits;
+
     if (info.length === 0) {
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.',
