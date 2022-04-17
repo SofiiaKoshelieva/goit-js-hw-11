@@ -70,3 +70,7 @@ body {
   width: 100%;
   height: 220px;
 }
+.pagination-container {
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
